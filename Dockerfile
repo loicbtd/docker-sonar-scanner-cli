@@ -1,17 +1,25 @@
 FROM openjdk:8-alpine
 
+LABEL maintainer="Loïc BERTRAND <loic.bert.marcel@gmail.com>"
+
+ARG SONAR_SCANNER_CLI_SOURCE="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.3.0.2102.zip"
+
 ENV \
-    SONAR_SCANNER_CLI_SOURCE="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip" \
-    PATH=/opt/sonar-scanner-cli/bin:$PATH
+    PATH=/opt/sonar-scanner-cli/bin:$PATH \
+    SONAR_RUNNER_HOME=/opt/sonar-scanner-cli \
+    JAVA_HOME=/usr
 
 RUN \
     echo "**** installing required packages" && \
         apk add --no-cache --upgrade \
-            curl \
-            unzip && \
+            sed \
+            curl && \
     echo "**** installing sonar-scanner-cli" && \
-        mkdir -p /tmp/downloads /opt/sonnar-scanner-cli && \
+        mkdir -p /tmp/downloads /tmp/extracted && \
         curl -o /tmp/downloads/sonar-scanner-cli.zip $SONAR_SCANNER_CLI_SOURCE && \
-        unzip /tmp/downloads/sonar-scanner-cli.zip -d /opt/sonnar-scanner-cli && \
+        cd /tmp/extracted && \
+        jar xf /tmp/downloads/sonar-scanner-cli.zip && \
+        mv /tmp/extracted/sonar-scanner-* /opt/sonar-scanner-cli && \
+        chmod -R +x /opt/sonar-scanner-cli/bin && \
     echo "**** cleaning up ****" && \
         rm -rf /tmp/*
