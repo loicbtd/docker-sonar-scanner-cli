@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "**** build ****" && \
+  docker build --tag=buildtest . && \
+echo "**** clean up ****" && \
+  docker image rm buildtest

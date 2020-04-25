@@ -12,6 +12,8 @@ ENV \
 RUN \
     echo "**** installing required packages" && \
         apk add --no-cache --upgrade \
+            nodejs \
+            nodejs-npm \
             sed \
             curl && \
     echo "**** installing sonar-scanner-cli" && \
